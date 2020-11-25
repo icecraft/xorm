@@ -35,9 +35,9 @@ func commonExpandListInt(in *Value, param *Value, sep string) (*Value, *Error) {
 }
 
 func filterExpandListInt(in *Value, param *Value) (*Value, *Error) {
-	return commonExpandListInt(in, value, ",")
+	return commonExpandListInt(in, param, ",")
 }
 
 func filterExpandListSep(in *Value, param *Value) (*Value, *Error) {
-	return commonExpandListInt(in, value, "|")
+	return commonExpandListInt(in, param, "|")
 }
