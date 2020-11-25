@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/CloudyKit/jet"
-	"gopkg.in/flosch/pongo2.v3"
+    "github.com/icecraft/pongo2"
 )
 
 type SqlTemplate interface {

@@ -1,0 +1,76 @@
+diff --git a/filter_sql.go b/filter_sql.go
+index e3733ca..a9be614 100644
+--- a/filter_sql.go
++++ b/filter_sql.go
+@@ -6,11 +6,12 @@ import (
+ 	"strings"
+ )
+ 
+-type NotListError struct {
++type GError struct {
++	Msg string `json:"msg"`
+ }
+ 
+-func (v *NotListError) Error() string {
+-	return "Not List! Please check it when use pongo2 template\n"
++func (e *GError) Error() string {
++	return e.Msg
+ }
+ 
+ func filterExpandListInt(in *Value, param *Value) (*Value, *Error) {
+@@ -24,8 +25,11 @@ func filterExpandListInt(in *Value, param *Value) (*Value, *Error) {
+ 			str = append(str, fmt.Sprintf("%v", item))
+ 		}
+ 	} else {
+-		err := &NotListError{}
+-		return nil, err
++		return nil, &Error{
++			Sender:   "filter:sqlExpandIntArray",
++			ErrorMsg: "Not list, Pls check it when use expandSql",
++		}
++	}
+ 
+ 	return AsValue(strings.Join(str, ",")), nil
+ }
+diff --git a/variable.go b/variable.go
+index 9ec6a59..fe38640 100644
+--- a/variable.go
++++ b/variable.go
+@@ -13,6 +13,14 @@ const (
+ 	varTypeIdent
+ )
+ 
++var (
++	DML []string
++)
++
++func init() {
++	DML = []string{"select ", "delete ", "insert ", "update "}
++}
++
+ type variablePart struct {
+ 	typ int
+ 	s   string
+@@ -84,6 +92,7 @@ func (expr *variableResolver) Execute(ctx *ExecutionContext, buffer *bytes.Buffe
+ }
+ 
+ func (expr *stringResolver) Execute(ctx *ExecutionContext, buffer *bytes.Buffer) *Error {
++
+ 	value, err := expr.Evaluate(ctx)
+ 	if err != nil {
+ 		return err
+@@ -403,6 +412,14 @@ func (vr *variableResolver) Evaluate(ctx *ExecutionContext) (*Value, *Error) {
+ 	if err != nil {
+ 		return AsValue(nil), ctx.Error(err.Error(), vr.location_token)
+ 	}
++	// 在这里统一规避掉 sql 注入吧（其实应该用 filter 的）
++	v := strings.ToLower(fmt.Sprintf("%v", value))
++	for _, s := range DML {
++		if strings.Contains(v, s) {
++			return AsValue(nil), ctx.Error(fmt.Sprintf("variable should not have danger keyword: %s\n", s), vr.location_token)
++		}
++	}
++
+ 	return value, nil
+ }
+ 

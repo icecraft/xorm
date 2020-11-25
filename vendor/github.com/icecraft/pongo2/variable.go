@@ -13,6 +13,14 @@ const (
 	varTypeIdent
 )
 
+var (
+	DML []string
+)
+
+func init() {
+	DML = []string{"select ", "delete ", "insert ", "update "}
+}
+
 type variablePart struct {
 	typ int
 	s   string
@@ -84,6 +92,7 @@ func (expr *variableResolver) Execute(ctx *ExecutionContext, buffer *bytes.Buffe
 }
 
 func (expr *stringResolver) Execute(ctx *ExecutionContext, buffer *bytes.Buffer) *Error {
+
 	value, err := expr.Evaluate(ctx)
 	if err != nil {
 		return err
@@ -403,6 +412,14 @@ func (vr *variableResolver) Evaluate(ctx *ExecutionContext) (*Value, *Error) {
 	if err != nil {
 		return AsValue(nil), ctx.Error(err.Error(), vr.location_token)
 	}
+	// 在这里统一规避掉 sql 注入吧（其实应该用 filter 的）
+	v := strings.ToLower(fmt.Sprintf("%v", value))
+	for _, s := range DML {
+		if strings.Contains(v, s) {
+			return AsValue(nil), ctx.Error(fmt.Sprintf("variable should not have danger keyword: %s\n", s), vr.location_token)
+		}
+	}
+
 	return value, nil
 }
 

@@ -57,6 +57,12 @@
 			"revisionTime": "2017-03-29T04:21:07Z"
 		},
 		{
+			"checksumSHA1": "1B8uOkoB0KnlKpPahZ4jN4f74tM=",
+			"path": "github.com/icecraft/pongo2",
+			"revision": "ef8a76c814d35e771cfe82870a56e02701fea853",
+			"revisionTime": "2020-07-31T09:24:35Z"
+		},
+		{
 			"checksumSHA1": "veKBU5FJfGTojLA0p08KGCFowno=",
 			"path": "github.com/mattn/go-runewidth",
 			"revision": "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb",
@@ -73,12 +79,6 @@
 			"checksumSHA1": "uTQtOqR0ePMMcvuvAIksiIZxhqU=",
 			"path": "golang.org/x/sys/unix",
 			"revision": ""
-		},
-		{
-			"checksumSHA1": "jkRCiYi/YHOA4m3F+eFvw2mfgc0=",
-			"path": "gopkg.in/flosch/pongo2.v3",
-			"revision": "5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9",
-			"revisionTime": "2014-10-28T00:08:13Z"
 		},
 		{
 			"checksumSHA1": "21kDrz4DnDppRHgK7vVmOFwgcSQ=",
